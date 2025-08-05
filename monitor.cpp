@@ -18,8 +18,19 @@ bool isSpO2Ok(float spo2) {
   return spo2 >= 90;
 }
 
+void blinkAlarm(int times) {
+  for (int i = 0; i < times; i++) {
+    cout << "\r* " << flush;
+    sleep_for(seconds(1));
+    cout << "\r *" << flush;
+    sleep_for(seconds(1));
+  }
+  cout << "\n";
+}
+
 void showAlert(const std::string& message) {
   cout << message << "\n";
+  blinkAlarm();
 }
 
 int vitalsOk(float temperature, float pulseRate, float spo2) {
