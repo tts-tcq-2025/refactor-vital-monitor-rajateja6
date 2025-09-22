@@ -1,16 +1,13 @@
 #pragma once
-#include <string>
+#ifndef MONITOR_H
+#define MONITOR_H
 
-struct VitalStatus {
-  bool temperatureOk;
-  bool pulseOk;
-  bool spo2Ok;
-};
+// Declare individual vital checks
+int tempOk(float temperature);
+int pulseRateOk(float pulse);
+int spo2Ok(float spo2);
 
-VitalStatus checkVitals(float temperature, float pulseRate, float spo2);
-void showAlert(const VitalStatus& status);
-void blinkAlarm(int times = 6);
+// Declare combined vital check
+int vitalsOk(float temperature, float pulseRate, float spo2);
 
-bool isTemperatureOk(float temperature);
-bool isPulseOk(float pulseRate);
-bool isSpO2Ok(float spo2);
+#endif
