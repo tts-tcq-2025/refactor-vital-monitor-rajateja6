@@ -1,24 +1,25 @@
 #include "./monitor.h"
-#include <assert.h>
+#include <iostream>
 #include <thread>
 #include <chrono>
-#include <iostream>
 #include <string>
-
 using std::cout, std::flush, std::this_thread::sleep_for, std::chrono::seconds;
-
 bool isTemperatureOk(float temperature) {
   return temperature >= 95 && temperature <= 102;
 }
-
 bool isPulseOk(float pulseRate) {
   return pulseRate >= 60 && pulseRate <= 100;
 }
-
 bool isSpO2Ok(float spo2) {
   return spo2 >= 90;
 }
-
+VitalStatus checkVitals(float temperature, float pulseRate, float spo2) {
+  VitalStatus status;
+  status.temperatureOk = isTemperatureOk(temperature);
+  status.pulseOk = isPulseOk(pulseRate);
+  status.spo2Ok = isSpO2Ok(spo2);
+  return status;
+}
 void blinkAlarm(int times) {
   for (int i = 0; i < times; i++) {
     cout << "\r* " << flush;
@@ -28,24 +29,20 @@ void blinkAlarm(int times) {
   }
   cout << "\n";
 }
-
-void showAlert(const std::string& message) {
-  cout << message << "\n";
-  blinkAlarm();
-}
-
-int vitalsOk(float temperature, float pulseRate, float spo2) {
-  if (!isTemperatureOk(temperature)) {
-    showAlert("Temperature is critical!");
-    return 0;
+void showAlert(const VitalStatus& status) {
+  if (!status.temperatureOk) {
+    cout << "Temperature is critical!\n";
+    blinkAlarm();
   }
-  if (!isPulseOk(pulseRate)) {
-    showAlert("Pulse Rate is out of range!");
-    return 0;
+  if (!status.pulseOk) {
+    cout << "Pulse Rate is out of range!\n";
+    blinkAlarm();
   }
-  if (!isSpO2Ok(spo2)) {
-    showAlert("Oxygen Saturation out of range!");
-    return 0;
+  if (!status.spo2Ok) {
+    cout << "Oxygen Saturation out of range!\n";
+    blinkAlarm();
   }
-  return 1;
+  if (status.temperatureOk && status.pulseOk && status.spo2Ok) {
+    cout << "All vitals are OK.\n";
+  }
 }
